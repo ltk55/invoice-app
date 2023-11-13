@@ -1,10 +1,10 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { League_Spartan } from "next/font/google";
 import { type ReactNode } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const leagueSpartan = League_Spartan({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +18,7 @@ export default function RootLayout({
 }): ReactNode {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={leagueSpartan.className}>{children}</body>
     </html>
   );
 }
