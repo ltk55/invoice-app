@@ -34,6 +34,7 @@ module.exports = {
     "simple-import-sort/exports": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
     "tailwindcss/no-custom-classname": "off",
+    "tailwindcss/classnames-order": "off",
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
