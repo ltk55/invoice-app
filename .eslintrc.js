@@ -23,6 +23,12 @@ module.exports = {
         sourceType: "script",
       },
     },
+    {
+      files: ["*.tsx"],
+      rules: {
+        "no-undef": "off",
+      },
+    },
   ],
   parserOptions: {
     ecmaVersion: "latest",
