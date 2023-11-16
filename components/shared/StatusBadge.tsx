@@ -3,13 +3,16 @@ import { type Status } from "@/types";
 
 export default function StatusBadge({
   status,
+  className,
 }: {
   status: Status;
+  className?: string;
 }): React.JSX.Element {
   return (
     <div
       className={cn(
         "flex h-10 w-[104px] items-center justify-center rounded-md bg-opacity-5",
+        className,
         {
           "bg-emerald-400 text-emerald-400": status === "paid",
           "bg-amber-500 text-amber-500": status === "pending",

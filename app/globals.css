@@ -2,26 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer base {
+  body,
+  #root {
+    @apply bg-colour-1100;
   }
-}
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  body.dark {
+    @apply bg-colour-1200;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-colour-400;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-colour-500;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-colour-600;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-colour-700;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-colour-400;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    @apply bg-colour-300;
+  }
 }
