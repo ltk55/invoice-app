@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { League_Spartan } from "next/font/google";
 import { type ReactNode } from "react";
 
-import Header from "@/components/shared/Header";
+import Header from "@/components/shared/Header/Header";
 
 const leagueSpartan = League_Spartan({ subsets: ["latin"] });
 
