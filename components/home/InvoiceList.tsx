@@ -8,7 +8,7 @@ export default function InvoiceList(): React.JSX.Element {
   const [invoices] = useInvoiceStore((state) => [state.invoices]);
 
   return (
-    <ul className="mb-28 flex w-[672px] list-none flex-col gap-4">
+    <ul className="mb-28 flex list-none flex-col gap-4 md:w-[672px]">
       {invoices.map((invoice) => (
         <InvoiceItem key={invoice.id} invoice={invoice} />
       ))}
