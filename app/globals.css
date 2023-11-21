@@ -3,19 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  body,
-  #root {
-    @apply bg-colour-1100;
-  }
-
-  body.dark {
-    @apply bg-colour-1200;
-  }
-
-  .dark {
-    color-scheme: dark;
-  }
-
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;
@@ -36,21 +23,21 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-colour-500;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
     @apply bg-colour-600;
   }
 
-  .dark ::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-thumb:hover {
     @apply bg-colour-700;
   }
+
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-colour-300;
+  }
   .dark ::-webkit-scrollbar-thumb {
-    @apply bg-colour-400;
+    @apply bg-colour-600;
   }
 
   .dark ::-webkit-scrollbar-thumb:hover {
-    @apply bg-colour-300;
+    @apply bg-colour-1100;
   }
 }
