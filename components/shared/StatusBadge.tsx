@@ -16,7 +16,8 @@ export default function StatusBadge({
         {
           "bg-emerald-400 text-emerald-400": status === "paid",
           "bg-amber-500 text-amber-500": status === "pending",
-          "bg-gray-700 text-gray-700": status === "draft",
+          "bg-gray-700 text-gray-700 dark:bg-colour-400 dark:text-colour-500":
+            status === "draft",
         },
       )}
     >
@@ -24,7 +25,7 @@ export default function StatusBadge({
         className={cn("mr-2 h-2 w-2 rounded-full", {
           "bg-emerald-400": status === "paid",
           "bg-amber-500": status === "pending",
-          "bg-gray-700": status === "draft",
+          "bg-gray-700 dark:bg-colour-500": status === "draft",
         })}
       />
       <span className="font-bold leading-none">
