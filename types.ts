@@ -14,6 +14,12 @@ interface Item {
 
 type Status = "draft" | "pending" | "paid";
 
+interface FilterStatus {
+  draft: boolean;
+  pending: boolean;
+  paid: boolean;
+}
+
 interface Invoice {
   id: string;
   createdAt: string;
@@ -29,4 +35,4 @@ interface Invoice {
   total: number;
 }
 
-export type { Invoice, Status };
+export type { FilterStatus, Invoice, Status };
