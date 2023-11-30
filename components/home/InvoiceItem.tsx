@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { formatCurrency, formatDate } from "@/lib/utils";
 import iconArrowRight from "@/public/assets/icon-arrow-right.svg";
@@ -14,14 +15,17 @@ export default function InvoiceItem({
   const { id, paymentDue, total, clientName, status } = invoice;
 
   return (
-    <li className="flex h-[134px] w-[327px] cursor-pointer items-center justify-between rounded-lg bg-white px-6 pb-[22px] pt-6 shadow hover:outline hover:outline-colour-100 dark:bg-colour-300 md:flex md:h-[72px] md:w-[672px] md:justify-start md:px-8 md:py-0">
+    <Link
+      href={`./invoice/${id}`}
+      className="flex h-[134px] w-[327px] cursor-pointer items-center justify-between rounded-lg bg-white px-6 pb-[22px] pt-6 shadow hover:outline hover:outline-colour-100 dark:bg-colour-300 md:flex md:h-[72px] md:w-[672px] md:justify-start md:px-8 md:py-0 xl:w-[730px]"
+    >
       <div className="flex h-full flex-col items-start justify-between md:flex md:flex-row md:items-center">
-        <div className="font-bold leading-none md:mr-2 md:w-20">
+        <div className="font-bold leading-none md:mr-2 md:w-20 xl:w-24">
           <span className="text-colour-700">#</span>
           <span className="text-colour-800 dark:text-white">{id}</span>
         </div>
 
-        <div className="md:mr-3 md:w-32">
+        <div className="md:mr-3 md:w-32 xl:w-36">
           <span className="text-xs font-medium leading-none text-colour-600 dark:text-colour-500">
             Due{" "}
           </span>
@@ -34,7 +38,7 @@ export default function InvoiceItem({
           {formatCurrency(total)}
         </div>
 
-        <div className="hidden text-xs font-medium leading-none text-slate-400 dark:text-white md:mr-[10px] md:block md:w-28">
+        <div className="hidden text-xs font-medium leading-none text-slate-400 dark:text-white md:mr-[10px] md:block md:w-28 xl:w-32">
           {clientName}
         </div>
       </div>
@@ -44,7 +48,7 @@ export default function InvoiceItem({
           {clientName}
         </div>
 
-        <div className="hidden font-bold dark:text-white md:mr-10 md:block md:w-[90px] md:text-right">
+        <div className="hidden font-bold dark:text-white md:mr-10 md:block md:w-[90px] md:text-right xl:w-24">
           {formatCurrency(total)}
         </div>
 
@@ -56,6 +60,6 @@ export default function InvoiceItem({
         alt={`go to invoice ${id}`}
         className="hidden md:block"
       />
-    </li>
+    </Link>
   );
 }
