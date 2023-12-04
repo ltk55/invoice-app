@@ -46,7 +46,7 @@ export default function StatusFilterMenu(): React.JSX.Element {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center">
+    <div className="relative z-0 flex flex-col items-center">
       <button
         className="flex cursor-pointer items-center gap-[14px]"
         onClick={handleButtonClick}
