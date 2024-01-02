@@ -1,14 +1,22 @@
 "use client";
 
 import useInvoiceStore from "@/lib/invoiceStore";
+import { filterInvoices } from "@/lib/utils";
 
 import StatusFilterMenu from "./StatusFilterMenu";
 
 export default function ActionBar(): React.JSX.Element {
-  const invoices = useInvoiceStore((state) => state.invoices);
+  const [invoices, filterStatus] = useInvoiceStore((state) => [
+    state.invoices,
+    state.filterStatus,
+  ]);
+
+  const filteredInvoices = invoices.filter((invoice) =>
+    filterInvoices(invoice, filterStatus),
+  );
 
   const invoiceCountMessage =
-    invoices.length === 0
+    filteredInvoices.length === 0
       ? "No invoices"
       : `There are ${invoices.length} total invoices`;
 

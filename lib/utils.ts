@@ -1,5 +1,8 @@
 import clsx, { type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+
+import type { FilterStatus, Invoice } from "@/types";
+
 function cn(...classes: ClassValue[]): string {
   return twMerge(clsx(...classes));
 }
@@ -26,4 +29,25 @@ function formatDate(inputDate: string): string {
   return formattedDate;
 }
 
-export { capitalizeFirstCharacter, cn, formatCurrency, formatDate };
+function filterInvoices(invoice: Invoice, filterStatus: FilterStatus): boolean {
+  if (
+    (filterStatus.draft && invoice.status === "draft") ||
+    (filterStatus.pending && invoice.status === "pending") ||
+    (filterStatus.paid && invoice.status === "paid")
+  ) {
+    return true;
+  }
+  // If all invoice status is false, return true
+  if (!filterStatus.draft && !filterStatus.pending && !filterStatus.paid) {
+    return true;
+  }
+  return false;
+}
+
+export {
+  capitalizeFirstCharacter,
+  cn,
+  filterInvoices,
+  formatCurrency,
+  formatDate,
+};
