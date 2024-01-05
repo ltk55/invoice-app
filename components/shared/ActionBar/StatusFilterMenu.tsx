@@ -52,7 +52,7 @@ export default function StatusFilterMenu(): React.JSX.Element {
         onClick={handleButtonClick}
       >
         <label className="cursor-pointer font-bold text-colour-800 dark:text-white">
-          Filter by status
+          Filter <div className="hidden md:inline">by status</div>
         </label>
         <Image
           src={iconArrowDown}
