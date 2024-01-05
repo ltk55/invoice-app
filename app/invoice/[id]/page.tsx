@@ -2,6 +2,7 @@
 
 import { notFound } from "next/navigation";
 
+import InvoiceDetails from "@/components/invoice/InvoiceDetails";
 import Button from "@/components/shared/Button";
 import GoBackBtn from "@/components/shared/GoBackBtn";
 import StatusBadge from "@/components/shared/StatusBadge";
@@ -28,7 +29,7 @@ export default function InvoicePage({
         <div className="md:w-[672px] xl:w-[730px]">
           <GoBackBtn />
 
-          <div className="mt-[31px] flex min-h-[91px] w-full max-w-[730px] items-center justify-between rounded-lg bg-white px-6 shadow dark:bg-colour-300">
+          <div className="mb-4 mt-[31px] flex min-h-[91px] w-full max-w-[730px] items-center justify-between rounded-lg bg-white px-6 shadow dark:bg-colour-300">
             <div className="flex w-full items-center justify-between gap-5 md:justify-normal">
               <span className="text-xs font-medium text-slate-400 dark:text-colour-500">
                 Status
@@ -51,6 +52,8 @@ export default function InvoicePage({
               </Button>
             </div>
           </div>
+
+          <InvoiceDetails invoice={invoice} />
         </div>
       </div>
     </div>
