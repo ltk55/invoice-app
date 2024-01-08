@@ -35,4 +35,4 @@ interface Invoice {
   total: number;
 }
 
-export type { Address, FilterStatus, Invoice, Status };
+export type { Address, FilterStatus, Invoice, Item, Status };

@@ -1,6 +1,8 @@
 import { formatDate } from "@/lib/utils";
 import type { Address, Invoice } from "@/types";
 
+import InvoicePriceCard from "./InvoicePriceCard";
+
 interface AddressBlockProps {
   address: Address;
 }
@@ -29,10 +31,12 @@ export default function InvoiceDetail({
     clientName,
     clientAddress,
     clientEmail,
+    items,
+    total,
   } = invoice;
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow dark:bg-colour-300 md:w-[672px] md:p-8 xl:w-[730px] xl:p-12">
+    <div className="mb-14 rounded-lg bg-white p-6 shadow dark:bg-colour-300 md:mb-11 md:w-[672px] md:p-8 xl:w-[730px] xl:p-12">
       <div className="flex flex-col md:flex-row md:justify-between">
         <div className="mb-8">
           <div className="mb-1 font-bold">
@@ -94,6 +98,8 @@ export default function InvoiceDetail({
           </div>
         </div>
       </div>
+
+      <InvoicePriceCard invoiceItems={items} totalInvoiceAmount={total} />
     </div>
   );
 }
