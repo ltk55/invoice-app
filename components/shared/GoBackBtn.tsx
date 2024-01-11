@@ -11,10 +11,12 @@ export default function GoBackBtn(): JSX.Element {
       onClick={() => {
         router.back();
       }}
-      className="flex items-center gap-4 self-start"
+      className="flex items-baseline gap-4 self-start"
     >
       <Image src={iconArrowLeft} alt="go back" />
-      <span className="font-bold text-colour-800 dark:text-white">Go Back</span>
+      <span className="font-bold text-colour-800 hover:text-colour-700 dark:text-white dark:hover:text-colour-600">
+        Go Back
+      </span>
     </button>
   );
 }
