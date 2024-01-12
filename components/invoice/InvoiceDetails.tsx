@@ -1,7 +1,7 @@
 import { formatDate } from "@/lib/utils";
 import type { Address, Invoice } from "@/types";
 
-import InvoicePriceCard from "./InvoicePriceCard";
+import InvoicePriceTable from "./InvoicePriceTable";
 
 interface AddressBlockProps {
   address: Address;
@@ -99,7 +99,7 @@ export default function InvoiceDetail({
         </div>
       </div>
 
-      <InvoicePriceCard invoiceItems={items} totalInvoiceAmount={total} />
+      <InvoicePriceTable invoiceItems={items} totalInvoiceAmount={total} />
     </div>
   );
 }
