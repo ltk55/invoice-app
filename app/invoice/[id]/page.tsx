@@ -3,9 +3,8 @@
 import { notFound } from "next/navigation";
 
 import InvoiceDetails from "@/components/invoice/InvoiceDetails";
-import Button from "@/components/shared/Button";
+import StatusBar from "@/components/invoice/StatusBar";
 import GoBackBtn from "@/components/shared/GoBackBtn";
-import StatusBadge from "@/components/shared/StatusBadge";
 import useInvoiceStore from "@/lib/invoiceStore";
 
 interface InvoicePageProps {
@@ -25,33 +24,11 @@ export default function InvoicePage({
 
   return (
     <div className="mx-6 flex md:mx-10">
-      <div className="mt-[105px] flex h-10 w-full flex-col md:mt-[129px] xl:mt-16 xl:items-center">
+      <div className="mt-[105px] flex h-10 w-full flex-col md:mt-[129px] md:items-center xl:mt-16">
         <div className="md:w-[672px] xl:w-[730px]">
           <GoBackBtn />
 
-          <div className="mb-4 mt-[31px] flex min-h-[91px] w-full max-w-[730px] items-center justify-between rounded-lg bg-white px-6 shadow dark:bg-colour-300">
-            <div className="flex w-full items-center justify-between gap-5 md:justify-normal">
-              <span className="text-xs font-medium text-slate-400 dark:text-colour-500">
-                Status
-              </span>
-
-              <StatusBadge status={invoice.status} />
-            </div>
-
-            <div className="hidden gap-2 md:flex">
-              <Button variant={3} className="px-6">
-                Edit
-              </Button>
-
-              <Button variant={5} className="px-6">
-                Delete
-              </Button>
-
-              <Button variant={2} className="w-36 px-6">
-                Mark as Paid
-              </Button>
-            </div>
-          </div>
+          <StatusBar invoiceStatus={invoice.status} />
 
           <InvoiceDetails invoice={invoice} />
         </div>
