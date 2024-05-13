@@ -5,8 +5,10 @@ import StatusBadge from "../shared/StatusBadge";
 
 export default function StatusBar({
   invoiceStatus,
+  onEdit,
 }: {
   invoiceStatus: Status;
+  onEdit: () => void;
 }): JSX.Element {
   return (
     <div className="mb-4 mt-[31px] flex min-h-[91px] w-full max-w-[730px] items-center justify-between rounded-lg bg-white px-6 shadow dark:bg-colour-300">
@@ -19,7 +21,7 @@ export default function StatusBar({
       </div>
 
       <div className="fixed bottom-0 left-0 flex h-24 w-full items-center justify-center gap-2 bg-white dark:bg-colour-300 md:relative">
-        <Button variant={3} className="px-6">
+        <Button variant={3} className="px-6" onClick={onEdit}>
           Edit
         </Button>
 
