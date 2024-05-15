@@ -16,7 +16,7 @@ export default function Input({
 }: InputProps): JSX.Element {
   return (
     <div className={className}>
-      <label className="mb-4 font-medium text-colour-700 dark:text-colour-600">
+      <label className="mb-4 text-sm font-medium text-colour-700 dark:text-colour-500">
         {label}
       </label>
       {errorMessage != null ? (
@@ -27,7 +27,7 @@ export default function Input({
         ""
       )}
       <input
-        className={`h-12 w-full resize-none rounded bg-slate-50 p-6 text-xs font-normal text-slate-600 outline-1 md:text-base ${
+        className={`mt-2 h-12 w-full resize-none rounded bg-slate-50 p-6 text-xs font-normal text-slate-600 outline-1 dark:bg-colour-400 md:text-base ${
           errorMessage != null
             ? "outline outline-colour-900"
             : "focus:border-1 focus:border-colour-200 focus:ring-0"

@@ -13,7 +13,7 @@ export default function Drawer({
   const variants = {
     open: {
       x: 0,
-      width: "auto",
+      width: "100%",
       maxWidth: "100%",
     },
     closed: {
@@ -29,7 +29,6 @@ export default function Drawer({
 
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Effect to toggle the body scroll based on the drawer state
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
     if (isOpen) {
@@ -59,18 +58,11 @@ export default function Drawer({
       </AnimatePresence>
       <motion.div
         ref={drawerRef}
-        className="fixed left-0 top-0 z-40 h-full overflow-hidden bg-white shadow-md xl:left-[103px] xl:rounded-r-2xl"
+        className="fixed left-0 top-0 z-40 h-full overflow-y-auto bg-white shadow-md dark:bg-colour-1200"
         initial="closed"
         animate={isOpen ? "open" : "closed"}
         variants={variants}
-        transition={{ duration: 0.5 }}
-        style={{
-          width:
-            drawerRef.current != null
-              ? `${drawerRef.current.scrollWidth}px`
-              : "auto",
-          maxWidth: "calc(100% - 103px)",
-        }}
+        transition={{ duration: 0.2 }}
       >
         {children}
       </motion.div>
