@@ -4,8 +4,9 @@ import type { Invoice } from "@/types";
 
 import Button from "../shared/Button";
 import Drawer from "../shared/Drawer";
-// import DatePicker from "../shared/FormElements/Datepicker";
+import CustomDatePicker from "../shared/FormElements/CustomDatePicker";
 import Input from "../shared/FormElements/Input";
+import PullDownMenu from "../shared/FormElements/PullDownMenu";
 
 interface InvoiceFormProps {
   invoice: Invoice;
@@ -24,7 +25,9 @@ interface FormInputs {
   clientCity: string;
   clientPostCode: string;
   clientCountry: string;
-  invoiceDate: string;
+  invoiceDate: Date;
+  paymentTerms: number;
+  projectDescription: string;
 }
 
 export default function InvoiceForm({
@@ -41,6 +44,8 @@ export default function InvoiceForm({
       // paymentTerms: invoice?.paymentTerms,s
     },
   });
+
+  // const paymentTermsOption = [{label: "test" valeu}];
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     // const invoiceId = invoices.findIndex((req) => req.id.toString() === id);
@@ -88,7 +93,7 @@ export default function InvoiceForm({
                 <Controller
                   name="companyStreetAddress"
                   control={control}
-                  rules={{ required: "Can't be empty" }}
+                  rules={{ required: "can't be empty" }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Street Address"
@@ -128,7 +133,7 @@ export default function InvoiceForm({
                       onChange={onChange}
                       onBlur={onBlur}
                       errorMessage={errors.companyPostCode?.message}
-                      className="col-span-1 md:col-span-1" // Adjusts to full width on sm and 1/3 on md
+                      className="col-span-1 md:col-span-1"
                       maxLength={50}
                     />
                   )}
@@ -157,7 +162,7 @@ export default function InvoiceForm({
                 name="clientName"
                 control={control}
                 rules={{
-                  required: "Can't be empty",
+                  required: "can't be empty",
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input
@@ -176,7 +181,7 @@ export default function InvoiceForm({
                 name="clientEmail"
                 control={control}
                 rules={{
-                  required: "Can't be empty",
+                  required: "can't be empty",
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input
@@ -191,11 +196,11 @@ export default function InvoiceForm({
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-4">
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-6 md:gap-4">
                 <Controller
                   name="clientStreetAddress"
                   control={control}
-                  rules={{ required: "Can't be empty" }}
+                  rules={{ required: "can't be empty" }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Street Address"
@@ -203,7 +208,7 @@ export default function InvoiceForm({
                       onChange={onChange}
                       onBlur={onBlur}
                       errorMessage={errors.companyStreetAddress?.message}
-                      className="col-span-2 md:col-span-3"
+                      className="col-span-2 md:col-span-6"
                       maxLength={50}
                     />
                   )}
@@ -219,7 +224,7 @@ export default function InvoiceForm({
                       onChange={onChange}
                       onBlur={onBlur}
                       errorMessage={errors.companyCity?.message}
-                      className="col-span-1 md:col-span-1"
+                      className="col-span-1 md:col-span-2"
                       maxLength={50}
                     />
                   )}
@@ -235,7 +240,7 @@ export default function InvoiceForm({
                       onChange={onChange}
                       onBlur={onBlur}
                       errorMessage={errors.companyPostCode?.message}
-                      className="col-span-1 md:col-span-1" // Adjusts to full width on sm and 1/3 on md
+                      className="col-span-1 md:col-span-2"
                       maxLength={50}
                     />
                   )}
@@ -251,27 +256,66 @@ export default function InvoiceForm({
                       onChange={onChange}
                       onBlur={onBlur}
                       errorMessage={errors.companyCountry?.message}
-                      className="col-span-2 md:col-span-1"
+                      className="col-span-2 md:col-span-2"
                       maxLength={50}
                     />
                   )}
                 />
 
-                {/* <Controller
+                <Controller
+                  control={control}
                   name="invoiceDate"
+                  render={({ field }) => (
+                    <CustomDatePicker
+                      label="Invoice Date"
+                      className="col-span-2 md:col-span-3"
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      selected={field.value}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="paymentTerms"
+                  control={control}
+                  render={({ field: { onChange, value, ...restProps } }) => (
+                    <PullDownMenu
+                      label="Payment Terms"
+                      className="col-span-2 md:col-span-3"
+                      onChange={onChange}
+                      options={[
+                        { label: "Next 1 Day", value: "1" },
+                        { label: "Next 7 Days", value: "7" },
+                        { label: "Next 14 Days", value: "14" },
+                        { label: "Next 30 Days", value: "30" },
+                      ]}
+                      {...restProps}
+                      defaultOptionIndex={0}
+                      // defaultOptionIndex={getOptionIndexByValue(
+                      //   CATEGORY_OPTIONS,
+                      //   feedback?.category,
+                      // )}
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="projectDescription"
                   control={control}
                   render={({ field: { onChange, value, onBlur } }) => (
-                    <DatePicker
-                      label="Invoice Date"
+                    <Input
+                      label="Project Description"
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.invoiceDate?.message}
-                      className="col-span-2 md:col-span-1"
+                      errorMessage={errors.projectDescription?.message}
+                      className="col-span-2 md:col-span-6"
                       maxLength={50}
                     />
                   )}
-                /> */}
+                />
               </div>
 
               <Button variant={3} className="px-6 py-4" onClick={onClose}>
