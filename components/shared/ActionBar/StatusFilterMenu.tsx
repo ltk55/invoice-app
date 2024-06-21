@@ -13,6 +13,7 @@ export default function StatusFilterMenu(): React.JSX.Element {
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const handleCheckboxChange = (status: Status): void => {
     setFilterStatus({
@@ -28,14 +29,12 @@ export default function StatusFilterMenu(): React.JSX.Element {
   const handleClickOutside = (event: MouseEvent): void => {
     if (
       dropdownRef.current != null &&
-      !dropdownRef.current.contains(event.target as Node)
+      !dropdownRef.current.contains(event.target as Node) &&
+      buttonRef.current != null &&
+      !buttonRef.current.contains(event.target as Node)
     ) {
       setIsDropdownVisible(false);
     }
-  };
-
-  const handleButtonClick = (): void => {
-    handleDropdownToggle();
   };
 
   useEffect(() => {
@@ -48,15 +47,19 @@ export default function StatusFilterMenu(): React.JSX.Element {
   return (
     <div className="relative z-0 flex flex-col items-center">
       <button
+        ref={buttonRef}
         className="flex cursor-pointer items-center gap-[14px]"
-        onClick={handleButtonClick}
+        onClick={handleDropdownToggle}
+        aria-controls="status-dropdown"
+        aria-expanded={isDropdownVisible}
+        aria-haspopup="true"
       >
         <label className="cursor-pointer font-bold text-colour-800 dark:text-white">
           Filter <div className="hidden md:inline">by status</div>
         </label>
         <Image
           src={iconArrowDown}
-          alt=""
+          alt="Toggle dropdown"
           className={`ml-2 ${
             isDropdownVisible ? "rotate-180" : "rotate-0"
           } transition-transform duration-300 ease-in-out`}
@@ -65,42 +68,24 @@ export default function StatusFilterMenu(): React.JSX.Element {
 
       {isDropdownVisible && (
         <div
+          id="status-dropdown"
           ref={dropdownRef}
-          className="absolute mt-10 flex h-32 w-48 flex-col justify-center rounded-lg bg-white pl-6 shadow"
+          className="absolute mt-10 flex h-32 w-48 flex-col justify-center rounded-lg bg-white pl-6 shadow dark:bg-colour-400"
         >
-          <label>
-            <input
-              type="checkbox"
-              checked={filterStatus.draft}
-              onChange={() => {
-                handleCheckboxChange("draft");
-              }}
-              className="mr-3 h-4 w-4 cursor-pointer rounded-sm border-none bg-colour-500 hover:border hover:border-colour-100"
-            />
-            Draft
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={filterStatus.pending}
-              onChange={() => {
-                handleCheckboxChange("pending");
-              }}
-              className="mr-3 h-4 w-4 rounded-sm border-none bg-colour-500"
-            />
-            Pending
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={filterStatus.paid}
-              onChange={() => {
-                handleCheckboxChange("paid");
-              }}
-              className="mr-3 h-4 w-4 rounded-sm border-none bg-colour-500"
-            />
-            Paid
-          </label>
+          {["draft", "pending", "paid"].map((status) => (
+            <label key={status} className="flex cursor-pointer align-middle">
+              <input
+                type="checkbox"
+                checked={filterStatus[status as Status]}
+                onChange={() => {
+                  handleCheckboxChange(status as Status);
+                }}
+                className="mr-3 h-4 w-4 rounded-sm border-none bg-colour-500 hover:border hover:border-colour-100 dark:bg-colour-300"
+                aria-label={`Filter by ${status}`}
+              />
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </label>
+          ))}
         </div>
       )}
     </div>
