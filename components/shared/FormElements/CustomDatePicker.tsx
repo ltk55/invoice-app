@@ -39,6 +39,7 @@ export default function CustomDatePicker({
           onChange(date);
         }}
         selected={selected}
+        dateFormat="dd MMM yyyy"
       />
     </div>
   );

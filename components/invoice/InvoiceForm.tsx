@@ -15,10 +15,10 @@ interface InvoiceFormProps {
 }
 
 interface FormInputs {
-  companyStreetAddress: string;
-  companyCity: string;
-  companyPostCode: string;
-  companyCountry: string;
+  senderStreetAddress: string;
+  senderCity: string;
+  senderPostCode: string;
+  senderCountry: string;
   clientName: string;
   clientEmail: string;
   clientStreetAddress: string;
@@ -29,6 +29,13 @@ interface FormInputs {
   paymentTerms: number;
   projectDescription: string;
 }
+
+const paymentTermOptions = [
+  { label: "Next 1 Day", value: "1" },
+  { label: "Next 7 Days", value: "7" },
+  { label: "Next 14 Days", value: "14" },
+  { label: "Next 30 Days", value: "30" },
+];
 
 export default function InvoiceForm({
   invoice,
@@ -41,11 +48,25 @@ export default function InvoiceForm({
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
-      // paymentTerms: invoice?.paymentTerms,s
+      senderStreetAddress: invoice.senderAddress.street,
+      senderCity: invoice.senderAddress.city,
+      senderPostCode: invoice.senderAddress.postCode,
+      senderCountry: invoice.senderAddress.country,
+      clientName: invoice.clientName,
+      clientEmail: invoice.clientEmail,
+      clientStreetAddress: invoice.clientAddress.street,
+      clientCity: invoice.clientAddress.city,
+      clientPostCode: invoice.clientAddress.postCode,
+      clientCountry: invoice.clientAddress.country,
+      invoiceDate: new Date(invoice.createdAt),
+      paymentTerms: invoice.paymentTerms,
+      projectDescription: invoice.description,
     },
   });
 
-  // const paymentTermsOption = [{label: "test" valeu}];
+  const defaultPaymentTermIndex = paymentTermOptions.findIndex(
+    (option) => option.value === invoice.paymentTerms.toString(),
+  );
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     // const invoiceId = invoices.findIndex((req) => req.id.toString() === id);
@@ -91,7 +112,7 @@ export default function InvoiceForm({
 
               <div className="grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-4">
                 <Controller
-                  name="companyStreetAddress"
+                  name="senderStreetAddress"
                   control={control}
                   rules={{ required: "can't be empty" }}
                   render={({ field: { onChange, value, onBlur } }) => (
@@ -100,7 +121,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyStreetAddress?.message}
+                      errorMessage={errors.senderStreetAddress?.message}
                       className="col-span-2 md:col-span-3"
                       maxLength={50}
                     />
@@ -108,7 +129,7 @@ export default function InvoiceForm({
                 />
 
                 <Controller
-                  name="companyCity"
+                  name="senderCity"
                   control={control}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
@@ -116,7 +137,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyCity?.message}
+                      errorMessage={errors.senderCity?.message}
                       className="col-span-1 md:col-span-1"
                       maxLength={50}
                     />
@@ -124,7 +145,7 @@ export default function InvoiceForm({
                 />
 
                 <Controller
-                  name="companyPostCode"
+                  name="senderPostCode"
                   control={control}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
@@ -132,7 +153,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyPostCode?.message}
+                      errorMessage={errors.senderPostCode?.message}
                       className="col-span-1 md:col-span-1"
                       maxLength={50}
                     />
@@ -140,7 +161,7 @@ export default function InvoiceForm({
                 />
 
                 <Controller
-                  name="companyCountry"
+                  name="senderCountry"
                   control={control}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
@@ -148,7 +169,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyCountry?.message}
+                      errorMessage={errors.senderCountry?.message}
                       className="col-span-2 md:col-span-1"
                       maxLength={50}
                     />
@@ -207,7 +228,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyStreetAddress?.message}
+                      errorMessage={errors.senderStreetAddress?.message}
                       className="col-span-2 md:col-span-6"
                       maxLength={50}
                     />
@@ -223,7 +244,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyCity?.message}
+                      errorMessage={errors.clientCity?.message}
                       className="col-span-1 md:col-span-2"
                       maxLength={50}
                     />
@@ -239,7 +260,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyPostCode?.message}
+                      errorMessage={errors.clientPostCode?.message}
                       className="col-span-1 md:col-span-2"
                       maxLength={50}
                     />
@@ -255,7 +276,7 @@ export default function InvoiceForm({
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
-                      errorMessage={errors.companyCountry?.message}
+                      errorMessage={errors.clientCountry?.message}
                       className="col-span-2 md:col-span-2"
                       maxLength={50}
                     />
@@ -285,18 +306,9 @@ export default function InvoiceForm({
                       label="Payment Terms"
                       className="col-span-2 md:col-span-3"
                       onChange={onChange}
-                      options={[
-                        { label: "Next 1 Day", value: "1" },
-                        { label: "Next 7 Days", value: "7" },
-                        { label: "Next 14 Days", value: "14" },
-                        { label: "Next 30 Days", value: "30" },
-                      ]}
+                      options={paymentTermOptions}
+                      defaultOptionIndex={defaultPaymentTermIndex}
                       {...restProps}
-                      defaultOptionIndex={0}
-                      // defaultOptionIndex={getOptionIndexByValue(
-                      //   CATEGORY_OPTIONS,
-                      //   feedback?.category,
-                      // )}
                     />
                   )}
                 />
