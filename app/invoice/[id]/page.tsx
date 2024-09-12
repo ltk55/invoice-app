@@ -1,8 +1,9 @@
 "use client";
 
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { useState } from "react";
 
+import DeleteConfirmationModal from "@/components/invoice/DeleteConfirmationModal";
 import InvoiceDetails from "@/components/invoice/InvoiceDetails";
 import InvoiceForm from "@/components/invoice/InvoiceForm";
 import StatusBar from "@/components/invoice/StatusBar";
@@ -16,7 +17,15 @@ interface InvoicePageProps {
 export default function InvoicePage({
   params: { id },
 }: InvoicePageProps): React.JSX.Element {
-  const invoices = useInvoiceStore((state) => state.invoices);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { invoices, deleteInvoice } = useInvoiceStore((state) => ({
+    invoices: state.invoices,
+    deleteInvoice: state.deleteInvoice,
+  }));
+
+  const router = useRouter();
 
   const invoice = invoices.find((invoice) => invoice.id === id);
 
@@ -24,7 +33,12 @@ export default function InvoicePage({
     notFound();
   }
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleDelete = (): void => {
+    router.push("/");
+    setTimeout(() => {
+      deleteInvoice(id);
+    }, 1);
+  };
 
   return (
     <div className="mx-6 flex md:mx-10">
@@ -35,6 +49,9 @@ export default function InvoicePage({
             invoiceStatus={invoice.status}
             onEdit={() => {
               setDrawerOpen(true);
+            }}
+            onDelete={() => {
+              setIsModalOpen(true);
             }}
           />
           <InvoiceDetails invoice={invoice} />
@@ -47,6 +64,15 @@ export default function InvoicePage({
           />
         </div>
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+        onDelete={handleDelete}
+        invoiceId={invoice.id}
+      />
     </div>
   );
 }

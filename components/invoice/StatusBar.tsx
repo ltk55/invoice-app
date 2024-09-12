@@ -3,13 +3,17 @@ import type { Status } from "@/types";
 import Button from "../shared/Button";
 import StatusBadge from "../shared/StatusBadge";
 
+interface StatusBarProps {
+  invoiceStatus: Status;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
 export default function StatusBar({
   invoiceStatus,
   onEdit,
-}: {
-  invoiceStatus: Status;
-  onEdit: () => void;
-}): JSX.Element {
+  onDelete,
+}: StatusBarProps): JSX.Element {
   return (
     <div className="mb-4 mt-[31px] flex min-h-[91px] w-full max-w-[730px] items-center justify-between rounded-lg bg-white px-6 shadow dark:bg-colour-300">
       <div className="flex w-full items-center justify-between gap-5 md:justify-normal">
@@ -25,7 +29,7 @@ export default function StatusBar({
           Edit
         </Button>
 
-        <Button variant={5} className="px-6">
+        <Button variant={5} className="px-6" onClick={onDelete}>
           Delete
         </Button>
 
