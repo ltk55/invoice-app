@@ -27,7 +27,8 @@ export default function Button({
           "bg-gray-700 text-colour-600 hover:bg-colour-700 dark:bg-gray-700 dark:text-colour-500 hover:dark:bg-colour-300":
             variant === 4,
           "bg-colour-900 text-white hover:bg-colour-1000": variant === 5,
-          "bg-slate-50 text-white hover:bg-indigo-100": variant === 6,
+          "bg-[#F9FAFE] text-colour-700 hover:bg-indigo-100 dark:bg-colour-400 dark:text-colour-500 dark:hover:bg-colour-300":
+            variant === 6,
         },
       )}
     >
@@ -35,7 +36,7 @@ export default function Button({
         <Image
           src={iconPlus}
           alt="add"
-          className="ml-2 mr-4 h-8 w-8 rounded-full bg-white p-2.5"
+          className="ml-2 mr-4 size-8 rounded-full bg-white p-2.5"
           width={10}
           height={10}
         />

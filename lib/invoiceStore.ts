@@ -10,6 +10,7 @@ interface InvoiceStore {
   invoices: Invoice[];
   filterStatus: FilterStatus;
   setFilterStatus: (status: Partial<FilterStatus>) => void;
+  updateInvoice: (updatedInvoice: Invoice) => void;
 }
 
 const useInvoiceStore = create<InvoiceStore>()(
@@ -29,6 +30,13 @@ const useInvoiceStore = create<InvoiceStore>()(
       deleteInvoice: (id: string) => {
         set((state) => ({
           invoices: state.invoices.filter((invoice) => invoice.id !== id),
+        }));
+      },
+      updateInvoice: (updatedInvoice: Invoice) => {
+        set((state) => ({
+          invoices: state.invoices.map((invoice) =>
+            invoice.id === updatedInvoice.id ? updatedInvoice : invoice,
+          ),
         }));
       },
     }),

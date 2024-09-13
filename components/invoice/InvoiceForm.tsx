@@ -1,5 +1,12 @@
-import { Controller, type SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import {
+  Controller,
+  type SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 
+import useInvoiceStore from "@/lib/invoiceStore";
 import type { Invoice } from "@/types";
 
 import Button from "../shared/Button";
@@ -28,6 +35,11 @@ interface FormInputs {
   invoiceDate: Date;
   paymentTerms: number;
   projectDescription: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
 }
 
 const paymentTermOptions = [
@@ -42,9 +54,13 @@ export default function InvoiceForm({
   open,
   onClose,
 }: InvoiceFormProps): JSX.Element {
+  const { updateInvoice } = useInvoiceStore();
+  const router = useRouter();
+
   const {
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<FormInputs>({
     defaultValues: {
@@ -61,41 +77,58 @@ export default function InvoiceForm({
       invoiceDate: new Date(invoice.createdAt),
       paymentTerms: invoice.paymentTerms,
       projectDescription: invoice.description,
+      items: invoice.items,
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items",
   });
 
   const defaultPaymentTermIndex = paymentTermOptions.findIndex(
     (option) => option.value === invoice.paymentTerms.toString(),
   );
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    // const invoiceId = invoices.findIndex((req) => req.id.toString() === id);
-    // const updatedInvoice = {
-    //   ...invoices[invoiceId],
-    //   paymentTerms: data.paymentTerms,
-    // };
-    // const updatedInvoices = [...invoices];
-    // updatedInvoices[invoiceId] = updatedInvoice;
-    // setInvoices(updatedInvoices);
-    // router.back();
+  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    // Prepare the updated invoice object
+    const updatedInvoice: Invoice = {
+      ...invoice,
+      senderAddress: {
+        street: data.senderStreetAddress,
+        city: data.senderCity,
+        postCode: data.senderPostCode,
+        country: data.senderCountry,
+      },
+      clientName: data.clientName,
+      clientEmail: data.clientEmail,
+      clientAddress: {
+        street: data.clientStreetAddress,
+        city: data.clientCity,
+        postCode: data.clientPostCode,
+        country: data.clientCountry,
+      },
+      createdAt: data.invoiceDate.toISOString(),
+      paymentTerms: data.paymentTerms,
+      description: data.projectDescription,
+      items: data.items.map((item) => ({
+        ...item,
+        total: item.quantity * item.price,
+      })),
+      total: data.items.reduce(
+        (acc, item) => acc + item.quantity * item.price,
+        0,
+      ),
+    };
+
+    updateInvoice(updatedInvoice);
+
+    router.push("/");
   };
 
-  //   const onDelete = (): void => {
-  //     const productReqIndex = productRequests.findIndex(
-  //       (req) => req.id.toString() === id,
-  //     );
-
-  //     if (productReqIndex !== -1) {
-  //       const updatedProductRequests = [
-  //         ...productRequests.slice(0, productReqIndex),
-  //         ...productRequests.slice(productReqIndex + 1),
-  //       ];
-
-  //       setProductRequests(updatedProductRequests);
-
-  //       router.push("/");
-  //     }
-  //   };
+  const calculateTotal = (quantity: number, price: number): string => {
+    return (quantity * price).toFixed(2);
+  };
 
   return (
     <Drawer isOpen={open}>
@@ -330,9 +363,143 @@ export default function InvoiceForm({
                 />
               </div>
 
-              <Button variant={3} className="px-6 py-4" onClick={onClose}>
-                Discard
+              <h2 className="my-6 font-bold text-[#777F98]">Item List</h2>
+
+              {/* Header for md: and above */}
+              {fields.length > 0 && (
+                <div className="mb-2 hidden grid-cols-12 items-center gap-4 text-sm font-medium text-colour-700 dark:text-colour-500 md:grid">
+                  <div className="col-span-5">Item Name</div>
+                  <div className="col-span-2">Qty.</div>
+                  <div className="col-span-2">Price</div>
+                  <div className="col-span-2">Total</div>
+                  <div className="col-span-1"></div>{" "}
+                  {/* Empty column for delete icon */}
+                </div>
+              )}
+
+              {fields.map((item, index) => {
+                const quantity = watch(`items.${index}.quantity`);
+                const price = watch(`items.${index}.price`);
+                const total = calculateTotal(quantity, price);
+
+                return (
+                  <div
+                    key={item.id}
+                    className="mb-4 grid grid-cols-12 items-center gap-4"
+                  >
+                    {/* Item Name Input */}
+                    <Controller
+                      name={`items.${index}.name`}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Item Name"
+                          value={field.value}
+                          onChange={field.onChange}
+                          errorMessage={errors?.items?.[index]?.name?.message}
+                          className="col-span-12 md:col-span-5"
+                        />
+                      )}
+                    />
+
+                    {/* Quantity Input */}
+                    <Controller
+                      name={`items.${index}.quantity`}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Qty."
+                          type="number"
+                          min="0"
+                          value={field.value}
+                          onChange={field.onChange}
+                          errorMessage={
+                            errors?.items?.[index]?.quantity?.message
+                          }
+                          className="col-span-3 md:col-span-2"
+                        />
+                      )}
+                    />
+
+                    {/* Price Input */}
+                    <Controller
+                      name={`items.${index}.price`}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          label="Price"
+                          type="number"
+                          min="0"
+                          value={field.value}
+                          onChange={field.onChange}
+                          errorMessage={errors?.items?.[index]?.price?.message}
+                          className="col-span-4 md:col-span-2"
+                        />
+                      )}
+                    />
+
+                    {/* Total */}
+                    <div className="col-span-4 flex flex-col md:col-span-2">
+                      <label className="text-sm font-medium text-colour-700 dark:text-colour-500 md:hidden">
+                        Total
+                      </label>
+                      <p className="mt-2 flex h-12 items-center font-semibold text-slate-600 dark:text-white md:text-base">
+                        {total}
+                      </p>
+                    </div>
+
+                    {/* Delete */}
+                    <div className="col-span-1 flex h-12 items-center pt-5 md:col-span-1 md:pt-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          remove(index);
+                        }}
+                        className="transition-colors duration-200 ease-in-out focus:outline-none"
+                        aria-label={`Remove item ${index + 1}`}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="13"
+                          height="16"
+                          className="cursor-pointer fill-current hover:fill-red-600"
+                        >
+                          <path d="M11.583 3.556v10.666c0 .982-.795 1.778-1.777 1.778H2.694a1.777 1.777 0 01-1.777-1.778V3.556h10.666zM8.473 0l.888.889h3.111v1.778H.028V.889h3.11L4.029 0h4.444z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <Button
+                type="button"
+                variant={6}
+                className="w-full"
+                onClick={() => {
+                  append({
+                    name: "",
+                    quantity: 1,
+                    price: 0,
+                  });
+                }}
+              >
+                + Add New Item
               </Button>
+
+              <div className="my-8 flex justify-end space-x-4">
+                <Button
+                  variant={3}
+                  className="px-6 py-4"
+                  onClick={onClose}
+                  type="button"
+                >
+                  Discard
+                </Button>
+                <Button type="submit" variant={2} className="px-6 py-4">
+                  Save Changes
+                </Button>
+              </div>
             </form>
           </div>
         </div>
