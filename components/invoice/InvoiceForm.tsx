@@ -91,7 +91,6 @@ export default function InvoiceForm({
   );
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    // Prepare the updated invoice object
     const updatedInvoice: Invoice = {
       ...invoice,
       senderAddress: {

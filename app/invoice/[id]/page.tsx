@@ -47,6 +47,7 @@ export default function InvoicePage({
           <GoBackBtn />
           <StatusBar
             invoiceStatus={invoice.status}
+            invoiceId={invoice.id}
             onEdit={() => {
               setDrawerOpen(true);
             }}
