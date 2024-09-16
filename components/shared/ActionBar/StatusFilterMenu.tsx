@@ -80,7 +80,7 @@ export default function StatusFilterMenu(): React.JSX.Element {
                 onChange={() => {
                   handleCheckboxChange(status as Status);
                 }}
-                className="mr-3 h-4 w-4 rounded-sm border-none bg-colour-500 hover:border hover:border-colour-100 dark:bg-colour-300"
+                className="mr-3 size-4 rounded-sm border-none bg-colour-500 hover:border hover:border-colour-100 dark:bg-colour-300"
                 aria-label={`Filter by ${status}`}
               />
               {status.charAt(0).toUpperCase() + status.slice(1)}

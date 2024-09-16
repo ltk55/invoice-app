@@ -6,7 +6,7 @@ import StatusBadge from "../shared/StatusBadge";
 
 interface StatusBarProps {
   invoiceStatus: Status;
-  invoiceId: string; // Pass the invoiceId as a prop
+  invoiceId: string;
   onEdit: () => void;
   onDelete: () => void;
 }
@@ -29,7 +29,7 @@ export default function StatusBar({
         <StatusBadge status={invoiceStatus} />
       </div>
 
-      <div className="fixed bottom-0 left-0 flex h-24 w-full items-center justify-end gap-2 bg-white dark:bg-colour-300 md:relative">
+      <div className="fixed bottom-0 left-0 flex h-24 w-full items-center justify-end gap-2 bg-white px-6 dark:bg-colour-300 md:relative md:px-0">
         <Button variant={3} className="px-6" onClick={onEdit}>
           Edit
         </Button>

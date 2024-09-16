@@ -4,24 +4,31 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   label?: string;
   errorMessage?: string | undefined;
+  hideLabelOnMd?: boolean;
 }
 
 export default function Input({
   className,
   label,
   errorMessage,
+  hideLabelOnMd,
   ...restProps
 }: InputProps): JSX.Element {
   return (
     <div className={className}>
       <div className="flex justify-between">
-        <label className="text-sm font-medium text-colour-700 dark:text-colour-500 md:hidden">
-          {label}
-        </label>
-        {errorMessage != null ? (
+        {label != null && (
+          <label
+            className={`text-sm font-medium text-colour-700 dark:text-colour-500 ${
+              (hideLabelOnMd ?? false) ? "md:hidden" : ""
+            }`}
+          >
+            {label}
+          </label>
+        )}
+
+        {errorMessage != null && (
           <div className="text-sm font-normal text-red-600">{errorMessage}</div>
-        ) : (
-          ""
         )}
       </div>
       <input

@@ -12,7 +12,14 @@ function capitalizeFirstCharacter(str: string): string {
 }
 
 function formatCurrency(amount: number): string {
-  return `£ ${amount.toFixed(2)}`;
+  const numericAmount =
+    typeof amount === "number" ? amount : parseFloat(amount);
+
+  if (isNaN(numericAmount)) {
+    return "£ 0.00";
+  }
+
+  return `£ ${numericAmount.toFixed(2)}`;
 }
 
 function formatDate(inputDate: string): string {
@@ -44,10 +51,29 @@ function filterInvoices(invoice: Invoice, filterStatus: FilterStatus): boolean {
   return false;
 }
 
+function generateInvoiceID(existingIDs: string[]): string {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let newID;
+
+  do {
+    const randomLetters = Array(2)
+      .fill("")
+      .map(() => letters[Math.floor(Math.random() * letters.length)])
+      .join("");
+
+    const randomDigits = String(Math.floor(1000 + Math.random() * 9000));
+
+    newID = `${randomLetters}${randomDigits}`;
+  } while (existingIDs.includes(newID));
+
+  return newID;
+}
+
 export {
   capitalizeFirstCharacter,
   cn,
   filterInvoices,
   formatCurrency,
   formatDate,
+  generateInvoiceID,
 };

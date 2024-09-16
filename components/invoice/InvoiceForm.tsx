@@ -1,4 +1,5 @@
-import { useRouter } from "next/navigation";
+import { addDays } from "date-fns";
+import { useState } from "react";
 import {
   Controller,
   type SubmitHandler,
@@ -7,6 +8,7 @@ import {
 } from "react-hook-form";
 
 import useInvoiceStore from "@/lib/invoiceStore";
+import { generateInvoiceID } from "@/lib/utils";
 import type { Invoice } from "@/types";
 
 import Button from "../shared/Button";
@@ -16,9 +18,10 @@ import Input from "../shared/FormElements/Input";
 import PullDownMenu from "../shared/FormElements/PullDownMenu";
 
 interface InvoiceFormProps {
-  invoice: Invoice;
+  invoice?: Invoice;
   open: boolean;
   onClose: () => void;
+  mode: "edit" | "create";
 }
 
 interface FormInputs {
@@ -53,76 +56,145 @@ export default function InvoiceForm({
   invoice,
   open,
   onClose,
+  mode,
 }: InvoiceFormProps): JSX.Element {
-  const { updateInvoice } = useInvoiceStore();
-  const router = useRouter();
+  const [saveType, setSaveType] = useState<"draft" | "send">("send");
+
+  const { updateInvoice, createNewInvoice } = useInvoiceStore();
 
   const {
     handleSubmit,
     control,
     watch,
     formState: { errors },
+    reset,
   } = useForm<FormInputs>({
-    defaultValues: {
-      senderStreetAddress: invoice.senderAddress.street,
-      senderCity: invoice.senderAddress.city,
-      senderPostCode: invoice.senderAddress.postCode,
-      senderCountry: invoice.senderAddress.country,
-      clientName: invoice.clientName,
-      clientEmail: invoice.clientEmail,
-      clientStreetAddress: invoice.clientAddress.street,
-      clientCity: invoice.clientAddress.city,
-      clientPostCode: invoice.clientAddress.postCode,
-      clientCountry: invoice.clientAddress.country,
-      invoiceDate: new Date(invoice.createdAt),
-      paymentTerms: invoice.paymentTerms,
-      projectDescription: invoice.description,
-      items: invoice.items,
-    },
+    defaultValues:
+      mode === "edit" && invoice != null
+        ? {
+            senderStreetAddress: invoice.senderAddress.street,
+            senderCity: invoice.senderAddress.city,
+            senderPostCode: invoice.senderAddress.postCode,
+            senderCountry: invoice.senderAddress.country,
+            clientName: invoice.clientName,
+            clientEmail: invoice.clientEmail,
+            clientStreetAddress: invoice.clientAddress.street,
+            clientCity: invoice.clientAddress.city,
+            clientPostCode: invoice.clientAddress.postCode,
+            clientCountry: invoice.clientAddress.country,
+            invoiceDate: new Date(invoice.createdAt),
+            paymentTerms: invoice.paymentTerms,
+            projectDescription: invoice.description,
+            items: invoice.items,
+          }
+        : {
+            // Default values for creating a new invoice
+            senderStreetAddress: "",
+            senderCity: "",
+            senderPostCode: "",
+            senderCountry: "",
+            clientName: "",
+            clientEmail: "",
+            clientStreetAddress: "",
+            clientCity: "",
+            clientPostCode: "",
+            clientCountry: "",
+            invoiceDate: new Date(),
+            paymentTerms: 30,
+            projectDescription: "",
+            items: [{ name: "", quantity: 1, price: 0 }],
+          },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, remove } = useFieldArray({
     control,
     name: "items",
   });
 
   const defaultPaymentTermIndex = paymentTermOptions.findIndex(
-    (option) => option.value === invoice.paymentTerms.toString(),
+    (option) => option.value === invoice?.paymentTerms?.toString() || "30",
   );
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    const updatedInvoice: Invoice = {
-      ...invoice,
-      senderAddress: {
-        street: data.senderStreetAddress,
-        city: data.senderCity,
-        postCode: data.senderPostCode,
-        country: data.senderCountry,
-      },
-      clientName: data.clientName,
-      clientEmail: data.clientEmail,
-      clientAddress: {
-        street: data.clientStreetAddress,
-        city: data.clientCity,
-        postCode: data.clientPostCode,
-        country: data.clientCountry,
-      },
-      createdAt: data.invoiceDate.toISOString(),
-      paymentTerms: data.paymentTerms,
-      description: data.projectDescription,
-      items: data.items.map((item) => ({
-        ...item,
-        total: item.quantity * item.price,
-      })),
-      total: data.items.reduce(
-        (acc, item) => acc + item.quantity * item.price,
-        0,
-      ),
-    };
+    const existingIDs = useInvoiceStore
+      .getState()
+      .invoices.map((inv) => inv.id);
+    const newInvoiceID = generateInvoiceID(existingIDs);
 
-    updateInvoice(updatedInvoice);
+    if (mode === "edit" && invoice != null) {
+      // Update existing invoice
+      const updatedInvoice: Invoice = {
+        ...invoice,
+        senderAddress: {
+          street: data.senderStreetAddress,
+          city: data.senderCity,
+          postCode: data.senderPostCode,
+          country: data.senderCountry,
+        },
+        clientName: data.clientName,
+        clientEmail: data.clientEmail,
+        clientAddress: {
+          street: data.clientStreetAddress,
+          city: data.clientCity,
+          postCode: data.clientPostCode,
+          country: data.clientCountry,
+        },
+        createdAt: data.invoiceDate.toISOString(),
+        paymentTerms: data.paymentTerms,
+        description: data.projectDescription,
+        status: invoice.status === "draft" ? "pending" : invoice.status,
+        items: data.items.map((item) => ({
+          ...item,
+          total: item.quantity * item.price,
+        })),
+        total: data.items.reduce(
+          (acc, item) => acc + item.quantity * item.price,
+          0,
+        ),
+      };
 
-    router.push("/");
+      updateInvoice(updatedInvoice);
+    } else {
+      // Create a new invoice
+      const newInvoice: Invoice = {
+        id: newInvoiceID,
+        senderAddress: {
+          street: data.senderStreetAddress,
+          city: data.senderCity,
+          postCode: data.senderPostCode,
+          country: data.senderCountry,
+        },
+        clientName: data.clientName,
+        clientEmail: data.clientEmail,
+        clientAddress: {
+          street: data.clientStreetAddress,
+          city: data.clientCity,
+          postCode: data.clientPostCode,
+          country: data.clientCountry,
+        },
+        createdAt: data.invoiceDate.toISOString(),
+        paymentDue: addDays(
+          new Date(data.invoiceDate),
+          data.paymentTerms,
+        ).toISOString(),
+        paymentTerms: data.paymentTerms,
+        description: data.projectDescription,
+        status: saveType === "draft" ? "draft" : "pending",
+        items: data.items.map((item) => ({
+          ...item,
+          total: item.quantity * item.price,
+        })),
+        total: data.items.reduce(
+          (acc, item) => acc + item.quantity * item.price,
+          0,
+        ),
+      };
+
+      createNewInvoice(newInvoice);
+      reset();
+    }
+
+    onClose();
   };
 
   const calculateTotal = (quantity: number, price: number): string => {
@@ -135,8 +207,13 @@ export default function InvoiceForm({
         <div className="mt-[105px] flex h-10 w-full flex-col md:mt-[129px] md:items-center xl:mt-16">
           <div className="md:w-[672px] xl:w-[730px]">
             <h1 className="mt-6 text-2xl font-bold text-colour-800 dark:text-white">
-              Edit <span className="text-colour-600">#</span>
-              {invoice?.id}
+              {mode === "edit" ? (
+                <>
+                  Edit <span className="text-colour-600">#{invoice?.id}</span>
+                </>
+              ) : (
+                "Create New Invoice"
+              )}
             </h1>
 
             <form className="" onSubmit={handleSubmit(onSubmit)}>
@@ -386,7 +463,7 @@ export default function InvoiceForm({
                     key={item.id}
                     className="mb-4 grid grid-cols-12 items-center gap-4"
                   >
-                    {/* Item Name Input */}
+                    {/* Item Name */}
                     <Controller
                       name={`items.${index}.name`}
                       control={control}
@@ -397,11 +474,12 @@ export default function InvoiceForm({
                           onChange={field.onChange}
                           errorMessage={errors?.items?.[index]?.name?.message}
                           className="col-span-12 md:col-span-5"
+                          hideLabelOnMd
                         />
                       )}
                     />
 
-                    {/* Quantity Input */}
+                    {/* Quantity */}
                     <Controller
                       name={`items.${index}.quantity`}
                       control={control}
@@ -410,12 +488,14 @@ export default function InvoiceForm({
                           label="Qty."
                           type="number"
                           min="0"
+                          step="0.01"
                           value={field.value}
                           onChange={field.onChange}
                           errorMessage={
                             errors?.items?.[index]?.quantity?.message
                           }
                           className="col-span-3 md:col-span-2"
+                          hideLabelOnMd
                         />
                       )}
                     />
@@ -429,10 +509,12 @@ export default function InvoiceForm({
                           label="Price"
                           type="number"
                           min="0"
+                          step="0.01"
                           value={field.value}
                           onChange={field.onChange}
                           errorMessage={errors?.items?.[index]?.price?.message}
                           className="col-span-4 md:col-span-2"
+                          hideLabelOnMd
                         />
                       )}
                     />
@@ -471,33 +553,41 @@ export default function InvoiceForm({
                 );
               })}
 
-              <Button
-                type="button"
-                variant={6}
-                className="w-full"
-                onClick={() => {
-                  append({
-                    name: "",
-                    quantity: 1,
-                    price: 0,
-                  });
-                }}
-              >
-                + Add New Item
-              </Button>
-
-              <div className="my-8 flex justify-end space-x-4">
+              <div className="my-8 flex justify-between gap-2">
                 <Button
                   variant={3}
-                  className="px-6 py-4"
+                  className="px-3 py-4 md:px-6"
                   onClick={onClose}
                   type="button"
                 >
                   Discard
                 </Button>
-                <Button type="submit" variant={2} className="px-6 py-4">
-                  Save Changes
-                </Button>
+
+                <div className="flex space-x-4">
+                  {mode === "create" && (
+                    <Button
+                      type="submit"
+                      variant={4}
+                      className="whitespace-nowrap px-3 py-4 md:px-6"
+                      onClick={() => {
+                        setSaveType("draft");
+                      }}
+                    >
+                      Save as Draft
+                    </Button>
+                  )}
+
+                  <Button
+                    type="submit"
+                    variant={2}
+                    className="whitespace-nowrap px-3 py-4 md:px-6"
+                    onClick={() => {
+                      setSaveType("send");
+                    }}
+                  >
+                    {mode === "edit" ? "Save Changes" : "Save & Send"}
+                  </Button>
+                </div>
               </div>
             </form>
           </div>

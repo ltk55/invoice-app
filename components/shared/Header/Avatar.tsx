@@ -8,7 +8,7 @@ export default function Avatar(): React.JSX.Element {
       <Image
         src={avatar}
         alt="avatar"
-        className="w-8 rounded-full xl:h-10 xl:w-10"
+        className="w-8 rounded-full xl:size-10"
       />
     </div>
   );

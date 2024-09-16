@@ -57,6 +57,7 @@ export default function InvoicePage({
           />
           <InvoiceDetails invoice={invoice} />
           <InvoiceForm
+            mode="edit"
             invoice={invoice}
             open={drawerOpen}
             onClose={() => {
