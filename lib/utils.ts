@@ -1,7 +1,8 @@
 import clsx, { type ClassValue } from "clsx";
+import { addDays } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
-import type { FilterStatus, Invoice } from "@/types";
+import type { FilterStatus, Invoice, InvoiceFormData } from "@/types";
 
 function cn(...classes: ClassValue[]): string {
   return twMerge(clsx(...classes));
@@ -69,9 +70,52 @@ function generateInvoiceID(existingIDs: string[]): string {
   return newID;
 }
 
+function createInvoiceObject(
+  data: InvoiceFormData,
+  existingIDs: string[],
+  saveType: "draft" | "send",
+): Invoice {
+  const newInvoiceID = generateInvoiceID(existingIDs);
+
+  return {
+    id: newInvoiceID,
+    senderAddress: {
+      street: data.senderStreetAddress,
+      city: data.senderCity,
+      postCode: data.senderPostCode,
+      country: data.senderCountry,
+    },
+    clientName: data.clientName,
+    clientEmail: data.clientEmail,
+    clientAddress: {
+      street: data.clientStreetAddress,
+      city: data.clientCity,
+      postCode: data.clientPostCode,
+      country: data.clientCountry,
+    },
+    createdAt: data.invoiceDate.toISOString(),
+    paymentDue: addDays(
+      new Date(data.invoiceDate),
+      data.paymentTerms,
+    ).toISOString(),
+    paymentTerms: data.paymentTerms,
+    description: data.projectDescription,
+    status: saveType === "draft" ? "draft" : "pending",
+    items: data.items.map((item) => ({
+      ...item,
+      total: item.quantity * item.price,
+    })),
+    total: data.items.reduce(
+      (acc, item) => acc + item.quantity * item.price,
+      0,
+    ),
+  };
+}
+
 export {
   capitalizeFirstCharacter,
   cn,
+  createInvoiceObject,
   filterInvoices,
   formatCurrency,
   formatDate,
