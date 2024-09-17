@@ -106,7 +106,7 @@ export default function InvoiceForm({
           },
   });
 
-  const { fields, remove } = useFieldArray({
+  const { fields, remove, append } = useFieldArray({
     control,
     name: "items",
   });
@@ -223,7 +223,7 @@ export default function InvoiceForm({
                 <Controller
                   name="senderStreetAddress"
                   control={control}
-                  rules={{ required: "can't be empty" }}
+                  rules={{ required: "Street Address is required." }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Street Address"
@@ -240,6 +240,7 @@ export default function InvoiceForm({
                 <Controller
                   name="senderCity"
                   control={control}
+                  rules={{ required: "City is required." }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="City"
@@ -256,6 +257,13 @@ export default function InvoiceForm({
                 <Controller
                   name="senderPostCode"
                   control={control}
+                  rules={{
+                    required: "Post Code is required.",
+                    pattern: {
+                      value: /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i,
+                      message: "Invalid postcode format.",
+                    },
+                  }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Post Code"
@@ -264,7 +272,7 @@ export default function InvoiceForm({
                       onBlur={onBlur}
                       errorMessage={errors.senderPostCode?.message}
                       className="col-span-1 md:col-span-1"
-                      maxLength={50}
+                      maxLength={8}
                     />
                   )}
                 />
@@ -272,6 +280,7 @@ export default function InvoiceForm({
                 <Controller
                   name="senderCountry"
                   control={control}
+                  rules={{ required: "Country is required." }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Country"
@@ -292,7 +301,7 @@ export default function InvoiceForm({
                 name="clientName"
                 control={control}
                 rules={{
-                  required: "can't be empty",
+                  required: "Client's Name is required.",
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input
@@ -311,7 +320,11 @@ export default function InvoiceForm({
                 name="clientEmail"
                 control={control}
                 rules={{
-                  required: "can't be empty",
+                  required: "Client's Email is required.",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Please enter a valid email address.",
+                  },
                 }}
                 render={({ field: { onChange, value, onBlur } }) => (
                   <Input
@@ -330,7 +343,7 @@ export default function InvoiceForm({
                 <Controller
                   name="clientStreetAddress"
                   control={control}
-                  rules={{ required: "can't be empty" }}
+                  rules={{ required: "Street Address is required." }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Street Address"
@@ -347,6 +360,7 @@ export default function InvoiceForm({
                 <Controller
                   name="clientCity"
                   control={control}
+                  rules={{ required: "City is required." }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="City"
@@ -363,6 +377,13 @@ export default function InvoiceForm({
                 <Controller
                   name="clientPostCode"
                   control={control}
+                  rules={{
+                    required: "Post Code is required.",
+                    pattern: {
+                      value: /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i,
+                      message: "Invalid postcode format.",
+                    },
+                  }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Post Code"
@@ -371,7 +392,7 @@ export default function InvoiceForm({
                       onBlur={onBlur}
                       errorMessage={errors.clientPostCode?.message}
                       className="col-span-1 md:col-span-2"
-                      maxLength={50}
+                      maxLength={8}
                     />
                   )}
                 />
@@ -379,6 +400,7 @@ export default function InvoiceForm({
                 <Controller
                   name="clientCountry"
                   control={control}
+                  rules={{ required: "Country is required." }}
                   render={({ field: { onChange, value, onBlur } }) => (
                     <Input
                       label="Country"
@@ -441,7 +463,6 @@ export default function InvoiceForm({
 
               <h2 className="my-6 font-bold text-[#777F98]">Item List</h2>
 
-              {/* Header for md: and above */}
               {fields.length > 0 && (
                 <div className="mb-2 hidden grid-cols-12 items-center gap-4 text-sm font-medium text-colour-700 dark:text-colour-500 md:grid">
                   <div className="col-span-5">Item Name</div>
@@ -552,6 +573,21 @@ export default function InvoiceForm({
                   </div>
                 );
               })}
+
+              <Button
+                type="button"
+                variant={6}
+                className="w-full"
+                onClick={() => {
+                  append({
+                    name: "",
+                    quantity: 1,
+                    price: 0,
+                  });
+                }}
+              >
+                + Add New Item
+              </Button>
 
               <div className="my-8 flex justify-between gap-2">
                 <Button
