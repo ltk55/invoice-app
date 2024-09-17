@@ -35,4 +35,25 @@ interface Invoice {
   total: number;
 }
 
-export type { Address, FilterStatus, Invoice, Item, Status };
+interface InvoiceFormData {
+  senderStreetAddress: string;
+  senderCity: string;
+  senderPostCode: string;
+  senderCountry: string;
+  clientName: string;
+  clientEmail: string;
+  clientStreetAddress: string;
+  clientCity: string;
+  clientPostCode: string;
+  clientCountry: string;
+  invoiceDate: Date;
+  paymentTerms: number;
+  projectDescription: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+}
+
+export type { Address, FilterStatus, Invoice, InvoiceFormData, Item, Status };

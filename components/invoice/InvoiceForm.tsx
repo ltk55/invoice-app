@@ -7,9 +7,10 @@ import {
   useForm,
 } from "react-hook-form";
 
+import { useInvoiceFormDefaults } from "@/hooks/useInvoiceFormDefaults";
 import useInvoiceStore from "@/lib/invoiceStore";
 import { generateInvoiceID } from "@/lib/utils";
-import type { Invoice } from "@/types";
+import type { Invoice, InvoiceFormData } from "@/types";
 
 import Button from "../shared/Button";
 import Drawer from "../shared/Drawer";
@@ -22,27 +23,6 @@ interface InvoiceFormProps {
   open: boolean;
   onClose: () => void;
   mode: "edit" | "create";
-}
-
-interface FormInputs {
-  senderStreetAddress: string;
-  senderCity: string;
-  senderPostCode: string;
-  senderCountry: string;
-  clientName: string;
-  clientEmail: string;
-  clientStreetAddress: string;
-  clientCity: string;
-  clientPostCode: string;
-  clientCountry: string;
-  invoiceDate: Date;
-  paymentTerms: number;
-  projectDescription: string;
-  items: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-  }>;
 }
 
 const paymentTermOptions = [
@@ -62,48 +42,16 @@ export default function InvoiceForm({
 
   const { updateInvoice, createNewInvoice } = useInvoiceStore();
 
+  const defaultValues = useInvoiceFormDefaults({ invoice, mode });
+
   const {
     handleSubmit,
     control,
     watch,
     formState: { errors },
     reset,
-  } = useForm<FormInputs>({
-    defaultValues:
-      mode === "edit" && invoice != null
-        ? {
-            senderStreetAddress: invoice.senderAddress.street,
-            senderCity: invoice.senderAddress.city,
-            senderPostCode: invoice.senderAddress.postCode,
-            senderCountry: invoice.senderAddress.country,
-            clientName: invoice.clientName,
-            clientEmail: invoice.clientEmail,
-            clientStreetAddress: invoice.clientAddress.street,
-            clientCity: invoice.clientAddress.city,
-            clientPostCode: invoice.clientAddress.postCode,
-            clientCountry: invoice.clientAddress.country,
-            invoiceDate: new Date(invoice.createdAt),
-            paymentTerms: invoice.paymentTerms,
-            projectDescription: invoice.description,
-            items: invoice.items,
-          }
-        : {
-            // Default values for creating a new invoice
-            senderStreetAddress: "",
-            senderCity: "",
-            senderPostCode: "",
-            senderCountry: "",
-            clientName: "",
-            clientEmail: "",
-            clientStreetAddress: "",
-            clientCity: "",
-            clientPostCode: "",
-            clientCountry: "",
-            invoiceDate: new Date(),
-            paymentTerms: 30,
-            projectDescription: "",
-            items: [{ name: "", quantity: 1, price: 0 }],
-          },
+  } = useForm<InvoiceFormData>({
+    defaultValues,
   });
 
   const { fields, remove, append } = useFieldArray({
@@ -115,7 +63,7 @@ export default function InvoiceForm({
     (option) => option.value === invoice?.paymentTerms?.toString() || "30",
   );
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+  const onSubmit: SubmitHandler<InvoiceFormData> = (data) => {
     const existingIDs = useInvoiceStore
       .getState()
       .invoices.map((inv) => inv.id);
