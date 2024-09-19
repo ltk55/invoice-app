@@ -130,7 +130,6 @@ export default function InvoiceForm({
 
             <form className="" onSubmit={handleSubmit(onSubmit)}>
               <h2 className="my-6 font-bold text-colour-100">Bill From</h2>
-
               <div className="grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-4">
                 <Controller
                   name="senderStreetAddress"
@@ -206,9 +205,7 @@ export default function InvoiceForm({
                   )}
                 />
               </div>
-
               <h2 className="my-6 font-bold text-colour-100">Bill To</h2>
-
               <Controller
                 name="clientName"
                 control={control}
@@ -227,7 +224,6 @@ export default function InvoiceForm({
                   />
                 )}
               />
-
               <Controller
                 name="clientEmail"
                 control={control}
@@ -250,7 +246,6 @@ export default function InvoiceForm({
                   />
                 )}
               />
-
               <div className="grid grid-cols-2 gap-6 md:grid-cols-6 md:gap-4">
                 <Controller
                   name="clientStreetAddress"
@@ -372,9 +367,7 @@ export default function InvoiceForm({
                   )}
                 />
               </div>
-
               <h2 className="my-6 font-bold text-[#777F98]">Item List</h2>
-
               {fields.length > 0 && (
                 <div className="mb-2 hidden grid-cols-12 items-center gap-4 text-sm font-medium text-colour-700 dark:text-colour-500 md:grid">
                   <div className="col-span-5">Item Name</div>
@@ -485,7 +478,6 @@ export default function InvoiceForm({
                   </div>
                 );
               })}
-
               <Button
                 type="button"
                 variant={6}
@@ -500,7 +492,6 @@ export default function InvoiceForm({
               >
                 + Add New Item
               </Button>
-
               <div className="my-8 flex justify-between gap-2">
                 <Button
                   variant={3}

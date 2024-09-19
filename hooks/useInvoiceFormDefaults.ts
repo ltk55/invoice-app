@@ -44,7 +44,7 @@ export function useInvoiceFormDefaults({
         invoiceDate: new Date(),
         paymentTerms: 30,
         projectDescription: "",
-        items: [{ name: "", quantity: 1, price: 0 }],
+        items: [],
       };
     }
   }, [invoice, mode]);
