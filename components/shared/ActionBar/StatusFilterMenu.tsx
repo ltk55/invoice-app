@@ -60,7 +60,7 @@ export default function StatusFilterMenu(): React.JSX.Element {
         <Image
           src={iconArrowDown}
           alt="Toggle dropdown"
-          className={`ml-2 ${
+          className={`${
             isDropdownVisible ? "rotate-180" : "rotate-0"
           } transition-transform duration-300 ease-in-out`}
         />

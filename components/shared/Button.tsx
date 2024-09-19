@@ -36,7 +36,7 @@ export default function Button({
         <Image
           src={iconPlus}
           alt="add"
-          className="ml-2 mr-4 size-8 rounded-full bg-white p-2.5"
+          className="mx-2 size-8 rounded-full bg-white p-2.5 md:mr-4"
           width={10}
           height={10}
         />

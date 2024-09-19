@@ -33,7 +33,12 @@ export default function ActionBar(): React.JSX.Element {
           Invoices
         </h1>
         <div className="text-xs font-medium leading-none text-colour-600 dark:text-colour-500">
-          {invoiceCountMessage}
+          <span className="block md:hidden">
+            {filteredInvoices.length === 0
+              ? "No invoices"
+              : `${invoices.length} invoices`}
+          </span>
+          <span className="hidden md:block">{invoiceCountMessage}</span>
         </div>
       </section>
 
@@ -47,7 +52,8 @@ export default function ActionBar(): React.JSX.Element {
             setDrawerOpen(true);
           }}
         >
-          New Invoice
+          <span className="block md:hidden">New</span>
+          <span className="hidden md:block">New Invoice</span>
         </Button>
       </div>
 
