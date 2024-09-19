@@ -13,12 +13,9 @@ export default function Drawer({
   const variants = {
     open: {
       x: 0,
-      width: "100%",
-      maxWidth: "100%",
     },
     closed: {
       x: "-100%",
-      width: 0,
     },
   };
 
@@ -58,7 +55,7 @@ export default function Drawer({
       </AnimatePresence>
       <motion.div
         ref={drawerRef}
-        className="fixed left-0 top-0 z-40 h-full overflow-y-auto bg-white shadow-md dark:bg-colour-1200"
+        className="fixed left-0 top-0 z-40 flex size-full justify-end overflow-y-auto bg-white shadow-md dark:bg-colour-1200 md:w-[760px] xl:w-[930px]"
         initial="closed"
         animate={isOpen ? "open" : "closed"}
         variants={variants}

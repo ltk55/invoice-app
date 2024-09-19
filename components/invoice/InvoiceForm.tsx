@@ -505,7 +505,10 @@ export default function InvoiceForm({
                 <Button
                   variant={3}
                   className="px-3 py-4 md:px-6"
-                  onClick={onClose}
+                  onClick={() => {
+                    reset();
+                    onClose();
+                  }}
                   type="button"
                 >
                   Discard

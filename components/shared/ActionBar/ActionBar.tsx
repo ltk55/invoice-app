@@ -10,12 +10,12 @@ import Button from "../Button";
 import StatusFilterMenu from "./StatusFilterMenu";
 
 export default function ActionBar(): React.JSX.Element {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const [invoices, filterStatus] = useInvoiceStore((state) => [
     state.invoices,
     state.filterStatus,
   ]);
-
-  const [isInvoiceFormOpen, setInvoiceFormOpen] = useState(false);
 
   const filteredInvoices = invoices.filter((invoice) =>
     filterInvoices(invoice, filterStatus),
@@ -25,14 +25,6 @@ export default function ActionBar(): React.JSX.Element {
     filteredInvoices.length === 0
       ? "No invoices"
       : `There are ${invoices.length} total invoices`;
-
-  const handleNewInvoiceClick = (): void => {
-    setInvoiceFormOpen(true);
-  };
-
-  const handleCloseInvoiceForm = (): void => {
-    setInvoiceFormOpen(false);
-  };
 
   return (
     <div className="mb-8 mt-[108px] flex w-[327px] justify-between md:mb-16 md:w-[672px] xl:mt-[78px]">
@@ -51,19 +43,21 @@ export default function ActionBar(): React.JSX.Element {
         <Button
           variant={1}
           className="pl-1 pr-4 text-sm"
-          onClick={handleNewInvoiceClick}
+          onClick={() => {
+            setDrawerOpen(true);
+          }}
         >
           New Invoice
         </Button>
       </div>
 
-      {isInvoiceFormOpen && (
-        <InvoiceForm
-          mode="create"
-          open={isInvoiceFormOpen}
-          onClose={handleCloseInvoiceForm}
-        />
-      )}
+      <InvoiceForm
+        mode="create"
+        open={drawerOpen}
+        onClose={() => {
+          setDrawerOpen(false);
+        }}
+      />
     </div>
   );
 }
