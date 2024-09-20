@@ -495,7 +495,7 @@ export default function InvoiceForm({
               <div className="my-8 flex justify-between gap-2">
                 <Button
                   variant={3}
-                  className="px-3 py-4 md:px-6"
+                  className="p-4 md:px-6"
                   onClick={() => {
                     reset();
                     onClose();
@@ -505,7 +505,7 @@ export default function InvoiceForm({
                   Discard
                 </Button>
 
-                <div className="flex space-x-4">
+                <div className="flex space-x-2">
                   {mode === "create" && (
                     <Button
                       type="submit"

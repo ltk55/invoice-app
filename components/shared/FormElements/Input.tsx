@@ -32,7 +32,7 @@ export default function Input({
         )}
       </div>
       <input
-        className={`mt-2 h-12 w-full resize-none rounded border-0 bg-slate-50 font-semibold text-slate-600 outline-1 dark:bg-colour-400 dark:text-white md:text-base ${
+        className={`mt-2 h-12 w-full resize-none rounded border-0 bg-slate-50 px-6 font-semibold text-slate-600 outline-1 dark:bg-colour-400 dark:text-white md:text-base ${
           errorMessage != null
             ? "outline outline-colour-900"
             : "focus:border-1 focus:border-colour-200 focus:ring-0 dark:focus:border-white"

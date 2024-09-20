@@ -55,7 +55,7 @@ export default function Drawer({
       </AnimatePresence>
       <motion.div
         ref={drawerRef}
-        className="fixed left-0 top-0 z-40 flex size-full justify-end overflow-y-auto bg-white shadow-md dark:bg-colour-1200 md:w-[760px] xl:w-[930px]"
+        className="fixed left-0 top-0 z-40 flex size-full justify-center overflow-y-auto bg-white shadow-md dark:bg-colour-1200 md:w-[760px] md:justify-end xl:w-[930px]"
         initial="closed"
         animate={isOpen ? "open" : "closed"}
         variants={variants}

@@ -13,7 +13,6 @@ interface PullDownMenuProps {
   onChange: (arg: string) => void;
   className?: string;
   defaultOptionIndex?: number;
-
   label?: string;
   errorMessage?: string | undefined;
 }
@@ -75,21 +74,31 @@ const PullDownMenu = React.forwardRef<HTMLDivElement, PullDownMenuProps>(
           <button
             type="button"
             onClick={handleToggle}
-            className={` relative mb-4 h-12 w-full cursor-pointer rounded bg-slate-50 px-6 py-2 text-left dark:bg-colour-400 ${
+            className={`relative mb-4 h-12 w-full cursor-pointer rounded bg-slate-50 px-6 py-2 text-left dark:bg-colour-400 ${
               isOpen ? "outline outline-1 outline-indigo-600" : ""
             }`}
           >
-            <span className="flex items-center justify-between truncate text-xs font-semibold text-slate-800 dark:text-white md:text-base">
+            <span className="flex items-center justify-between truncate text-base font-semibold text-slate-800 dark:text-white">
               {selected.label}
               <Image
                 src={iconArrowDown}
                 alt={isOpen ? "close select menu" : "open select menu"}
-                className={isOpen ? "rotate-180" : ""}
+                // eslint-disable-next-line tailwindcss/migration-from-tailwind-2
+                className={`transform transition-transform duration-300 ${
+                  isOpen ? "rotate-180" : "rotate-0"
+                }`}
               />
             </span>
           </button>
           {isOpen && (
-            <div className="absolute z-10 w-full overflow-auto rounded-lg bg-white text-base shadow dark:bg-colour-400 sm:text-sm">
+            <div
+              className="absolute z-10 w-full overflow-auto rounded-lg bg-white text-base opacity-100 shadow transition-opacity duration-300 ease-out dark:bg-colour-400 sm:text-sm"
+              style={{
+                transform: `scaleY(${isOpen ? 1 : 0})`,
+                transformOrigin: "top",
+                transition: "transform 0.3s ease-out",
+              }}
+            >
               {options.map((opt, index) => (
                 <div
                   key={index}
@@ -102,7 +111,7 @@ const PullDownMenu = React.forwardRef<HTMLDivElement, PullDownMenuProps>(
                       : "text-colour-800 dark:text-colour-500"
                   } `}
                 >
-                  <span className="block truncate text-xs font-semibold md:text-base">
+                  <span className="block truncate text-base font-semibold">
                     {opt.label}
                   </span>
                 </div>
