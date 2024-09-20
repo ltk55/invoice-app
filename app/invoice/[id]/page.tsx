@@ -1,7 +1,7 @@
 "use client";
 
 import { notFound, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import DeleteConfirmationModal from "@/components/invoice/DeleteConfirmationModal";
 import InvoiceDetails from "@/components/invoice/InvoiceDetails";
@@ -9,6 +9,7 @@ import InvoiceForm from "@/components/invoice/InvoiceForm";
 import StatusBar from "@/components/invoice/StatusBar";
 import GoBackBtn from "@/components/shared/GoBackBtn";
 import useInvoiceStore from "@/lib/invoiceStore";
+import { capitalizeFirstCharacter } from "@/lib/utils";
 
 interface InvoicePageProps {
   params: { id: string };
@@ -28,6 +29,21 @@ export default function InvoicePage({
   const router = useRouter();
 
   const invoice = invoices.find((invoice) => invoice.id === id);
+
+  useEffect(() => {
+    if (invoice != null) {
+      document.title = `Invoice #${invoice.id} | ${capitalizeFirstCharacter(invoice.status)}`;
+      const metaDescription = document.querySelector(
+        "meta[name='description']",
+      );
+      if (metaDescription != null) {
+        metaDescription.setAttribute(
+          "content",
+          `Details for invoice #${invoice.id} including status, items, and client information.`,
+        );
+      }
+    }
+  }, [invoice]);
 
   if (invoice == null) {
     notFound();
