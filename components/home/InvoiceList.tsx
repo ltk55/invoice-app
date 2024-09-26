@@ -1,22 +1,43 @@
-"use client";
+import { motion } from "framer-motion";
 
 import type { Invoice } from "@/types";
 
-import InvoiceNotFound from "../shared/InvoiceNotFound";
 import InvoiceItem from "./InvoiceItem";
+
+interface InvoiceListProps {
+  invoices: Invoice[];
+}
 
 export default function InvoiceList({
   invoices,
-}: {
-  invoices: Invoice[];
-}): React.JSX.Element {
-  return invoices.length === 0 ? (
-    <InvoiceNotFound />
-  ) : (
-    <ul className="mb-28 flex list-none flex-col gap-4 md:w-[672px] xl:w-[730px]">
+}: InvoiceListProps): React.JSX.Element {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+  };
+
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex flex-col gap-4"
+    >
       {invoices.map((invoice) => (
-        <InvoiceItem key={invoice.id} invoice={invoice} />
+        <motion.div key={invoice.id} variants={itemVariants}>
+          <InvoiceItem invoice={invoice} />
+        </motion.div>
       ))}
-    </ul>
+    </motion.div>
   );
 }
