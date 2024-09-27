@@ -16,7 +16,7 @@ export default function InvoicePriceTable({
           return (
             <div
               key={index}
-              className="flex w-full items-center justify-between pb-4 font-bold"
+              className="flex w-full items-center justify-between pb-4 text-sm font-bold"
             >
               <div>
                 <p className="text-colour-800 dark:text-white">{item.name}</p>
@@ -65,8 +65,8 @@ export default function InvoicePriceTable({
       </table>
 
       <div className="flex items-center justify-between rounded-b-lg bg-gray-700 px-6 py-5 text-white dark:bg-colour-800 md:px-8">
-        <div className="text-xs font-medium">Amount Due</div>
-        <div className="text-right text-2xl font-bold leading-loose">
+        <div className="text-xs font-medium md:text-base">Amount Due</div>
+        <div className="text-right text-lg font-bold leading-loose md:text-2xl">
           {formatCurrency(totalInvoiceAmount)}
         </div>
       </div>
