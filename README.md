@@ -9,7 +9,7 @@
 
 ### Links
 
-- Live Site URL: [https://in-browser-markdown-editor-gray.vercel.app/](https://invoice-app-tau-three.vercel.app/)
+- Live Site URL: [https://invoice-app-tau-three.vercel.app/](https://invoice-app-tau-three.vercel.app/)
 
 ### The challenge
 
